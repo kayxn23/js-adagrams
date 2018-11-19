@@ -34,6 +34,8 @@ const Adagrams = {
     'Z'
   ],
 
+
+
   // [ 'E', 'L', 'W', 'L', 'M', 'A', 'I' ]
   //the letter must be from the array
   //it can't be repeated
@@ -61,8 +63,105 @@ const Adagrams = {
     }
     return true;
   },
+
+  //iterate through the keys of the score chart
+  // if keys.include(character) add that value to the total score
+  scoreWord(word) { //word comes in as a string 'Dog'
+  const scoreChart = {
+    'AEIOULNRST': 1,
+    'DG': 2,
+    'BCMP': 3,
+    'FHVWY': 4,
+    'K': 5,
+    'JX': 8,
+    'QZ': 10
+  };
+
+    if (Array.isArray(word) && word.length === 0) return 0 ;
+    let wordArray = word.toUpperCase().split(''); //make upcase array ['D','O','G']
+  // adds  8 extra points if the word is 7 or more characters
+    let totalScore = 0;
+    for (let letter of wordArray) {
+      for (let key in scoreChart) {
+        if (key.includes(letter)) {
+          totalScore += scoreChart[key];
+        }
+      }
+    }
+    if (word.length >= 7) {
+      return totalScore += 8;
+    }
+    else {
+      return totalScore;
+    }
+  },
+
+
+  // let doubled = arr.map(num => {
+  //     return num * 2;
+  // });
+
+
+  highestScoreFrom(words){
+    let scoresWords = [];
+    for (let word of words) {
+      let scoreHash = {"score": this.scoreWord(word), "word": word}; //  { score: 8, word: 'X' }
+      scoresWords.push(scoreHash); //[{ score: 8, word: 'X' }, { score: 9, word: 'XX' }]
+    }
+    const maxScore = Math.max(...scoresWords.map(el => {
+      return el["score"];
+    }));
+
+    const wordsWithMaxScore = scoresWords.filter(el => {
+      return el["score"] == maxScore;
+    });
+
+    if (wordsWithMaxScore.length == 1) {
+      return wordsWithMaxScore[0];
+    } else {
+      const wordsWithMoreThanTenChars = wordsWithMaxScore.filter(el => {
+        return el["word"].length >= 10;
+      });
+
+      if (wordsWithMoreThanTenChars.length == 1) {
+        return wordsWithMoreThanTenChars[0];
+      }
+
+      const minLength = Math.min(...wordsWithMaxScore.map(el => {
+        return el["word"].length;
+      }));
+
+      const wordsWithFewerLetters = wordsWithMaxScore.filter(el => {
+        return el["word"].length == minLength;
+      });
+
+      return wordsWithFewerLetters[0];
+
+    }
+
+    //9
+
+    // return maxScore;
+    //[{ score: 8, word: 'X' }, { score: 8, word: 'XX' }, { score: 1, word: 'XX' }]
+    //[{ score: 8, word: 'X' }, { score: 9, word: 'XX' }, { score: 1, word: 'XX' }]
+
+    //[{ score: 8, word: 'X' }, { score: 8, word: 'XX' }]
+    //[{ score: 9, word: 'X' }]
+
+    //if there are no ties whoever has the highest score wins
+
+    //if scores tie...1)one is 10+ characters it wins 2)neither is 10+ the one with fewer letters win
+    //3)lengths equal first one wins
+
+
+
+  },
+
 };
 
+// const key = "hello";
+// object[key] == object["hello"]
+// object.key == object["key"]
 // Do not remove this line or your tests will break!
 export default Adagrams;
 // This line is necessary to allow our unit test file (specs/adagrams.spec.js) to import the Adagrams "module" and call the functions within it.
